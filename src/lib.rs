@@ -19,8 +19,8 @@ where
     D: Destination<E>,
     E: Element,
 {
-    channel: &'a Channel<DMA_INST>,
-    destination: &'a mut D,
+    _channel: &'a Channel<DMA_INST>,
+    _destination: &'a mut D,
     _elem: PhantomData<&'a E>,
 }
 
@@ -36,17 +36,17 @@ where
 }
 
 pub fn write<'a, D, E, const DMA_INST: u8>(
-    channel: &'a mut Channel<DMA_INST>,
+    _channel: &'a mut Channel<DMA_INST>,
     _: &'a [E],
-    destination: &'a mut D,
+    _destination: &'a mut D,
 ) -> Write<'a, D, E, DMA_INST>
 where
     D: Destination<E> + WorksWith<DMA_INST>,
     E: Element,
 {
     Write {
-        channel,
-        destination,
+        _channel,
+        _destination,
         _elem: PhantomData,
     }
 }
