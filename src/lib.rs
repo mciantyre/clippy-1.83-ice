@@ -50,14 +50,6 @@ where
     }
 }
 
-impl<D, E, const DMA_INST: u8> Drop for Write<'_, D, E, DMA_INST>
-where
-    D: Destination<E>,
-    E: Element,
-{
-    fn drop(&mut self) {}
-}
-
 pub fn write<'a, D, E, const DMA_INST: u8>(
     channel: &'a mut Channel<DMA_INST>,
     _: &'a [E],
