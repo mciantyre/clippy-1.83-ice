@@ -6,13 +6,13 @@ use core::{
     task::{Context, Poll},
 };
 
-pub struct Channel<const DMA_INST: u8>;
+pub struct Channel;
 
-pub struct Write<'a, const DMA_INST: u8> {
-    _channel: &'a Channel<DMA_INST>,
+pub struct Write<'a> {
+    _channel: &'a Channel,
 }
 
-impl<const DMA_INST: u8> Future for Write<'_, DMA_INST> {
+impl Future for Write<'_> {
     type Output = ();
     fn poll(self: Pin<&mut Self>, _: &mut Context<'_>) -> Poll<Self::Output> {
         Poll::Ready(())
@@ -22,10 +22,10 @@ impl<const DMA_INST: u8> Future for Write<'_, DMA_INST> {
 pub struct Periph;
 
 impl Periph {
-    pub fn dma_write<'a, const DMA_INST: u8>(
+    pub fn dma_write<'a>(
         &'a mut self,
-        _channel: &'a mut Channel<DMA_INST>,
-    ) -> Write<'a, DMA_INST> {
+        _channel: &'a mut Channel,
+    ) -> Write<'a> {
         Write { _channel }
     }
 }
