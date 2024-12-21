@@ -7,8 +7,6 @@ use core::{
     task::{Context, Poll},
 };
 
-pub enum Error {}
-
 pub trait Element: Copy {}
 impl Element for u8 {}
 
@@ -22,9 +20,9 @@ pub struct Transfer<'a, const DMA_INST: u8> {
 }
 
 impl<const DMA_INST: u8> Future for Transfer<'_, DMA_INST> {
-    type Output = Result<(), Error>;
+    type Output = ();
     fn poll(self: Pin<&mut Self>, _: &mut Context<'_>) -> Poll<Self::Output> {
-        Poll::Ready(Ok(()))
+        Poll::Ready(())
     }
 }
 
@@ -44,7 +42,7 @@ where
     D: Destination<E>,
     E: Element,
 {
-    type Output = Result<(), Error>;
+    type Output = ();
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         unsafe { self.map_unchecked_mut(|this| &mut this.transfer) }.poll(cx)
     }
