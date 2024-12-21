@@ -1,0 +1,28 @@
+name: Repro
+
+on: [ push ]
+
+jobs:
+  clippy:
+    strategy:
+      fail-fast: false
+      matrix:
+        host: [ macos-latest, ubuntu-latest, windows-latest ]
+        version: [ "1.83", "1.82", "1.81" ]
+    runs-on: ${{ matrix.host }}
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup toolchain install ${{ matrix.version }} --no-self-update --profile minimal --component clippy
+    - run: cargo +${{ matrix.version }} clippy
+  
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        host: [ macos-latest, ubuntu-latest, windows-latest ]
+        version: [ "1.83", "1.82", "1.81" ]
+    runs-on: ${{ matrix.host }}
+    steps:
+    - uses: actions/checkout@v4
+    - run: rustup toolchain install ${{ matrix.version }} --no-self-update --profile minimal
+    - run: cargo +${{ matrix.version }} build
