@@ -2,7 +2,7 @@
 
 use core::{
     future::Future,
-    marker::{PhantomData, PhantomPinned},
+    marker::PhantomData,
     pin::Pin,
     task::{Context, Poll},
 };
@@ -14,18 +14,6 @@ pub trait Destination<E: Element> {}
 pub trait WorksWith<const DMA_INST: u8> {}
 pub struct Channel<const DMA_INST: u8>();
 
-pub struct Transfer<'a, const DMA_INST: u8> {
-    channel: &'a Channel<DMA_INST>,
-    _pinned: PhantomPinned,
-}
-
-impl<const DMA_INST: u8> Future for Transfer<'_, DMA_INST> {
-    type Output = ();
-    fn poll(self: Pin<&mut Self>, _: &mut Context<'_>) -> Poll<Self::Output> {
-        Poll::Ready(())
-    }
-}
-
 pub struct Write<'a, D, E, const DMA_INST: u8>
 where
     D: Destination<E>,
@@ -33,7 +21,6 @@ where
 {
     channel: &'a Channel<DMA_INST>,
     destination: &'a mut D,
-    transfer: Transfer<'a, DMA_INST>,
     _elem: PhantomData<&'a E>,
 }
 
@@ -43,8 +30,8 @@ where
     E: Element,
 {
     type Output = ();
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        unsafe { self.map_unchecked_mut(|this| &mut this.transfer) }.poll(cx)
+    fn poll(self: Pin<&mut Self>, _: &mut Context<'_>) -> Poll<Self::Output> {
+        Poll::Ready(())
     }
 }
 
@@ -60,10 +47,6 @@ where
     Write {
         channel,
         destination,
-        transfer: Transfer {
-            channel,
-            _pinned: PhantomPinned,
-        },
         _elem: PhantomData,
     }
 }
