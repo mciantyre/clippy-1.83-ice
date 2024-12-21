@@ -2,7 +2,6 @@
 
 use core::{
     future::Future,
-    marker::PhantomData,
     pin::Pin,
     task::{Context, Poll},
 };
@@ -20,9 +19,9 @@ impl<const DMA_INST: u8> Future for Write<'_, DMA_INST> {
     }
 }
 
-pub struct Periph<P, const N: u8>(PhantomData<P>);
+pub struct Periph<const N: u8>();
 
-impl<P, const N: u8> Periph<P, N> {
+impl<const N: u8> Periph<N> {
     pub fn dma_write<'a, const DMA_INST: u8>(
         &'a mut self,
         _channel: &'a mut Channel<DMA_INST>,
