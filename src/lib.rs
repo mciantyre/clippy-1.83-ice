@@ -6,7 +6,7 @@ use core::{
     task::{Context, Poll},
 };
 
-pub struct Channel<const DMA_INST: u8>();
+pub struct Channel<const DMA_INST: u8>;
 
 pub struct Write<'a, const DMA_INST: u8> {
     _channel: &'a Channel<DMA_INST>,
@@ -19,9 +19,9 @@ impl<const DMA_INST: u8> Future for Write<'_, DMA_INST> {
     }
 }
 
-pub struct Periph<const N: u8>();
+pub struct Periph;
 
-impl<const N: u8> Periph<N> {
+impl Periph {
     pub fn dma_write<'a, const DMA_INST: u8>(
         &'a mut self,
         _channel: &'a mut Channel<DMA_INST>,
