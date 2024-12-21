@@ -11,7 +11,6 @@ pub trait Element: Copy {}
 impl Element for u8 {}
 
 pub trait Destination<E: Element> {}
-pub trait WorksWith<const DMA_INST: u8> {}
 pub struct Channel<const DMA_INST: u8>();
 
 pub struct Write<'a, D, E, const DMA_INST: u8>
@@ -41,7 +40,7 @@ pub fn write<'a, D, E, const DMA_INST: u8>(
     _destination: &'a mut D,
 ) -> Write<'a, D, E, DMA_INST>
 where
-    D: Destination<E> + WorksWith<DMA_INST>,
+    D: Destination<E>,
     E: Element,
 {
     Write {
@@ -52,8 +51,6 @@ where
 }
 
 pub struct Periph<P, const N: u8>(PhantomData<P>);
-
-impl<P> WorksWith<3> for Periph<P, 1> {}
 impl<P, const N: u8> Destination<u8> for Periph<P, N> {}
 
 impl<P, const N: u8> Periph<P, N> {
@@ -63,7 +60,6 @@ impl<P, const N: u8> Periph<P, N> {
         buffer: &'a [u8],
     ) -> Write<'a, Self, u8, DMA_INST>
     where
-        Self: WorksWith<DMA_INST>,
     {
         write(channel, buffer, self)
     }
